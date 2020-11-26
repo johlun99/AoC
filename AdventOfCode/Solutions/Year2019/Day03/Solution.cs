@@ -13,8 +13,7 @@ namespace AdventOfCode.Solutions.Year2019
 
         public Day03() : base(03, 2019, "")
         {
-            //string[] input = Input.SplitByNewline();
-            string[] input = "R75,D30,R83,U83,L12,D49,R71,U7,L72\nU62,R66,U55,R34,D71,R55,D58,R83".SplitByNewline();
+            string[] input = Input.SplitByNewline();
 
             firstWire = new List<string>(input[0].Split(','));
             secondWire = new List<string>(input[1].Split(','));
@@ -32,7 +31,12 @@ namespace AdventOfCode.Solutions.Year2019
 
         protected override string SolvePartTwo()
         {
-            return null;
+            List<(int, int)> firstCoordinates = GetPathCoordinates(firstWire);
+            List<(int, int)> secondCoordinates = GetPathCoordinates(secondWire);
+
+            IEnumerable<(int, int)> intersections = firstCoordinates.Intersect(secondCoordinates);
+            
+            return Convert.ToString(GetShortestNumberOfStepsToIntersection(intersections, firstCoordinates, secondCoordinates));
         }
 
         protected List<(int, int)> GetPathCoordinates(List<string> wire)
@@ -78,12 +82,46 @@ namespace AdventOfCode.Solutions.Year2019
             (int, int) closestToHome = intersections.First();
 
             foreach ((int, int) intersection in intersections)
-            {
-                if (intersection.Item1 + intersection.Item2 < closestToHome.Item1 + intersection.Item2)
+                if (Math.Abs(intersection.Item1) + Math.Abs(intersection.Item2) < Math.Abs(closestToHome.Item1) + Math.Abs(closestToHome.Item2))
                     closestToHome = intersection;
-            }
-            
-            return Convert.ToInt32(Math.Abs(closestToHome.Item2) + Math.Abs(closestToHome.Item1) * Math.Sqrt(2));
+
+            return Convert.ToInt32(Math.Abs(closestToHome.Item2) + Math.Abs(closestToHome.Item1));
         }
-}
+
+        protected int GetShortestNumberOfStepsToIntersection(IEnumerable<(int, int)> intersections, List<(int, int)> firstPath, List<(int, int)> secondPath)
+        {
+            int shortest = 0;
+
+            foreach ((int, int) intersection in intersections)
+            {
+                int steps1 = 0;
+                int steps2 = 0;
+                int distance;
+                
+                foreach (var coordinate in firstPath)
+                {
+                    steps1++;
+                    if (coordinate == intersection)
+                        break;
+                }
+
+                foreach (var coordinate in secondPath)
+                {
+                    steps2++;
+                    if (coordinate == intersection)
+                        break;
+                }
+
+                distance = steps1 + steps2;
+
+                if (shortest == 0)
+                    shortest = distance;
+                
+                else if (distance < shortest)
+                    shortest = distance;
+            }
+
+            return shortest;
+        }
+    }
 }
