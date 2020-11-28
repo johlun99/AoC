@@ -12,26 +12,48 @@ namespace AdventOfCode.Solutions.Year2019
             while (code[index] != 99)
             {
                 int opCode = code[index];
-                int value1 = code[index + 1];
-                int value2 = code[index + 2];
-                int targetIndex = code[index + 3];
+                int steps = 4;
 
-                if (opCode == 1)
+                int value1;
+                int value2;
+                int targetIndex;
+
+                switch (opCode)
                 {
-                    code[targetIndex] = code[value1] + code[value2];
+                    case 1:
+                        // Add
+                        value1 = code[index + 1];
+                        value2 = code[index + 2];
+                        targetIndex = code[index + 3];
+                        
+                        code[targetIndex] = code[value1] + code[value2];
+                        break;
+                    case 2:
+                        // Multiply
+                        value1 = code[index + 1];
+                        value2 = code[index + 2];
+                        targetIndex = code[index + 3];
+
+                        code[targetIndex] = code[value1] * code[value2];
+                        break;
+                    case 3:
+                        // Read
+                        Console.Write("Input: ");
+                        string input = Console.ReadLine();
+
+                        targetIndex = code[code[index + 1]];
+
+                        code[targetIndex] = Convert.ToInt32(input);
+                        break;
+                    case 4:
+                        // Write
+                        targetIndex = code[code[index + 1]];
+                        
+                        Console.WriteLine(code[targetIndex]);
+                        break;
                 }
 
-                else if (opCode == 2)
-                {
-                    code[targetIndex] = code[value1] * code[value2];
-                }
-
-                else
-                {
-                    throw new Exception($"Wrongful opcode: {opCode}");
-                }
-
-                index += 4;
+                index += steps;
             }
 
             return code[0];
