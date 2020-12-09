@@ -54,7 +54,6 @@ namespace AdventOfCode.Solutions.Year2020
         public static Dictionary<int, (string cmd, string op)> ModOperations(Dictionary<int, (string cmd, string op)> input, Dictionary<string, List<string>> changeables)
         {
             Dictionary<int, (string cmd, string op)> operations = new Dictionary<int, (string cmd, string op)>();
-
             int accumulator = 0;
 
             for (int i = 0; i < input.Count; i++)
